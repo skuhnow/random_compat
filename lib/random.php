@@ -182,9 +182,15 @@ if (PHP_VERSION_ID < 70000) {
              */
             function random_bytes($length)
             {
-                throw new Exception(
-                    'There is no suitable CSPRNG installed on your system'
-                );
+                $strong = false;
+                $bytes = openssl_random_pseudo_bytes($length, $strong);
+                if (!$strong) {
+                    throw new Exception(
+                        'There is no suitable CSPRNG installed on your system'
+                    );
+                }
+
+                return $bytes;
             }
         }
     }
